@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookie from "js-cookie";
+import toast from "react-hot-toast";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 interface InitalStateType {
   IsLoading: "idle" | "pending" | "succeeded" | "failed";
@@ -64,11 +65,14 @@ const authSlice = createSlice({
     builder.addCase(register.fulfilled, (state, action) => {
       state.IsLoading = "succeeded";
       state.token = action.payload.token;
+      
+      toast.success("Registration successful");
     });
     builder.addCase(register.rejected, (state, action) => {
       state.IsLoading = "failed";
       state.token = null;
-      console.error("Registration error:", action.payload);
+      console.log("Registration error:", action.payload);
+      toast.error(`an error occured:${action.payload}`)
     });
     // handle login
     builder.addCase(login.pending, (state) => {
@@ -78,11 +82,13 @@ const authSlice = createSlice({
       state.IsLoading = "succeeded";
       state.token = action.payload.access_token;
       Cookie.set("token", action.payload.access_token, { expires: 1 }); // Expires in 1 day
+      toast.success("Login successful");
     });
     builder.addCase(login.rejected, (state, {payload}) => {
       state.IsLoading = "failed";
       state.token = null;
       console.log("Login error:", payload);
+      toast.error(`an error occured:${payload}`)
     });
   },
 });
