@@ -1,12 +1,16 @@
 "use client";
 
+import { login, register } from "@/lib/auth/auth";
+import { AppDispatch, RootState } from "@/lib/store";
 import { countries } from "@/utils/utils";
-import { Lock } from "lucide-react";
+import { Loader2Icon, Lock } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../shared/button";
 import Card from "../shared/card";
 import Input from "../shared/input";
@@ -18,35 +22,53 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const loading = useSelector((state: RootState) => state.auth.IsLoading);
+  const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle form submission
     if (page === "register") {
       if (password !== confirmPassword) {
         toast.error("Passwords do not match");
         return;
       }
-      if (!phone.startsWith("+255")) {
-        toast.error("Phone number must start with +255");
-        return;
-      }
-      if (phone.length < 8) {
-        toast.error("Phone number is too short");
-        return;
-      }
 
       // Proceed with registration
-      const data = {
-        phone,
-        password,
-      };
-      console.log("Registering user with data:", data);
+    }
+    if (!phone.startsWith("+255")) {
+      toast.error("Phone number must start with +255");
+      return;
+    }
+    if (phone.length < 8) {
+      toast.error("Phone number is too short");
+      return;
+    }
+
+    const data = {
+      phone,
+      password,
+    };
+    if (page === "register") {
+      const res = await dispatch(register(data));
+      if (res.meta.requestStatus === "fulfilled") {
+        router.push("/login");
+      }
+    } else {
+      const res = await dispatch(login(data));
+      if (res.meta.requestStatus === "fulfilled") {
+        router.push("/");
+      }
     }
   };
 
   useEffect(() => {
     if (page === "register") {
-      if (password.length === 0 && confirmPassword.length === 0 && password !== confirmPassword) {
+      if (
+        password.length === 0 &&
+        confirmPassword.length === 0 &&
+        password !== confirmPassword
+      ) {
         setPasswordError(true);
       } else {
         setPasswordError(false);
@@ -57,7 +79,7 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
     } else {
       setShowError(false);
     }
-  }, [phone, password, confirmPassword,showError,page]);
+  }, [phone, password, confirmPassword, showError, page]);
 
   const handlePhoneChange = (value: string) => {
     if (value.startsWith("+255")) {
@@ -173,18 +195,24 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
             </div>
           )}
 
-          <Button
-            onClick={handleSubmit}
-            variant="primary"
-            className="w-full mt-4"
-            disabled={
-              page === "register"
-                ? !phone || !password || !confirmPassword || passwordError
-                : !phone || !password
-            }
-          >
-            {page === "login" ? "Login" : "Register"}
-          </Button>
+          {loading === "pending" ? (
+            <div className="text-center mt-4">
+              <Loader2Icon className="animate-spin h-6 w-6 text-orange-400 mx-auto" />
+            </div>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              variant="primary"
+              className="w-full mt-4"
+              disabled={
+                page === "register"
+                  ? !phone || !password || !confirmPassword || passwordError
+                  : !phone || !password
+              }
+            >
+              {page === "login" ? "Login" : "Register"}
+            </Button>
+          )}
           <div className="text-right text-sm mt-4">
             {page === "login" ? (
               <Link
