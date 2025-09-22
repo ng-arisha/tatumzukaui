@@ -38,6 +38,8 @@ function BetForm() {
             amount: amount // replace with actual amount from input
         }
         await dispatch(placeBet(data));
+        setSelectedNumbers([]);
+        setAmount(0);
       }
     return (
         <Card className="py-6 px-4">
