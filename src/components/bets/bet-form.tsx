@@ -1,7 +1,11 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { placeBet } from "@/lib/bets/bet";
+import { AppDispatch, RootState } from "@/lib/store";
+import { Loader2Icon, Wallet } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../shared/button";
 import Card from "../shared/card";
 import Input from "../shared/input";
@@ -13,6 +17,28 @@ function BetForm() {
      const onSelectNumber = (num: number) => {
         setSelectedNumbers((prev) => [...prev, num]);
       };
+      const [amount, setAmount] = useState(0);
+
+      const dispatch = useDispatch<AppDispatch>();
+      const loading = useSelector((state: RootState) => state.bets.loading);
+      const activeRound = useSelector((state: RootState) => state.rounds.activeRound);
+
+      const handlePlaceBet = async() => {
+        if(selectedNumbers.length !==2){
+            toast.error("Please select exactly two numbers");
+            return;
+        }
+        if(amount <=0){
+            toast.error("Please enter a valid amount");
+            return;
+        }
+        const data = {
+            roundId: activeRound?.id!,
+            guess: selectedNumbers,
+            amount: amount // replace with actual amount from input
+        }
+        await dispatch(placeBet(data));
+      }
     return (
         <Card className="py-6 px-4">
             <h1 className="text-orange-400 text-lg ">Place Bet</h1>
@@ -62,22 +88,28 @@ function BetForm() {
               <Input
                 label="Bet Amount"
                 type="number"
-                value={0}
-                onChange={(val) => console.log(val)}
+                value={amount}
+                onChange={(e) => setAmount(Number(e))}
                 placeholder="Enter amount in USD"
                 required
-                Icon={Clock}
+                Icon={Wallet}
               />
             </div>
             {/* place bet button */}
             <div className="mt-4 text-center">
-              <Button
+              {
+                loading ==='pending' ? (
+                    <Loader2Icon className="animate-spin h-6 w-6 text-orange-400 mx-auto" />
+                ):(
+                    <Button
                 variant="primary"
-                onClick={() => console.log("Place Bet")}
-                disabled={selectedNumbers.length !== 3}
+                onClick={handlePlaceBet}
+                disabled={selectedNumbers.length !== 2}
               >
                 Place Bet
               </Button>
+                )
+              }
             </div>
           </Card>
     )
