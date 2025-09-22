@@ -7,3 +7,11 @@ declare type RoundType = {
     nmumbers: number[];
     status: string;
 }
+
+declare type CustomeJwtPayload = {
+    sub: string;
+    phone: string;
+    iat: number;
+    exp: number;
+    role: string;
+}
