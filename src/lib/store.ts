@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from "redux-persist";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import authReducer from "./auth/auth";
+import roundReducer from "./rounds/round";
 
 const createNoopStorage = () => {
     return {
@@ -32,7 +33,8 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
     reducer:{
-        auth:persistedAuthReducer
+        auth:persistedAuthReducer,
+        rounds:roundReducer
     },
     middleware:(getDefaultMiddleware)=>getDefaultMiddleware({
       serializableCheck:{

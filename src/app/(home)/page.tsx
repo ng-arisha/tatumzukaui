@@ -5,15 +5,22 @@ import Card from "@/components/shared/card";
 import Input from "@/components/shared/input";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
+import { getActiveRound, setActiveRound } from "@/lib/rounds/round";
+import { AppDispatch, RootState } from "@/lib/store";
 import { addTime } from "@/utils/utils";
 import { Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function HomePage() {
+
+  const activeRound = useSelector((state: RootState) => state.rounds.activeRound);
+  const loading = useSelector((state: RootState) => state.rounds.loading);
+  const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
-  const [rounds, setRounds] = useState<RoundType>();
+ 
 
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [roundEndTime, setRoundEndTime] = useState<Date | null>(null);
@@ -25,18 +32,27 @@ function HomePage() {
     setSelectedNumbers((prev) => [...prev, num]);
   };
 
-  console.log(`Available rounds:`, rounds);
+
+  useEffect(() => {
+    dispatch(getActiveRound())
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(!activeRound) return;
+    const endTime = addTime(activeRound.createdAt, 4, 30);
+    setRoundEndTime(endTime);
+    setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
+    
+  }, [activeRound]);
 
   useEffect(() => {
     if (!socket) return;
 
     socket.on("roundCreated", (round: RoundType) => {
       console.log("New round created:", round);
-      setRounds(round);
-      const endTime = addTime(round.createdAt, 4, 30);
-      setRoundEndTime(endTime);
-
-      setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
+      dispatch(setActiveRound(round));
+    
+      
     });
 
     return () => {
@@ -45,7 +61,7 @@ function HomePage() {
   }, [socket]);
   return (
     <>
-      {isConnected ? (
+      {isConnected && loading !=='pending' ? (
         <div className="w-full ">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-2">
@@ -68,7 +84,7 @@ function HomePage() {
                   <p className="text-gray-500">Please wait</p>
                 </div>
               ) : (
-                <div>
+                <div className="mb-4">
                   <p className="py-3 text-gray-500">Next round starts in :</p>
                   <Card className="border-2 border-orange-400 px-6 py-3">
                     <div className="flex space-x-2 items-center">
