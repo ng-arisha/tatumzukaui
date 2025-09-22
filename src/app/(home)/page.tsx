@@ -1,8 +1,7 @@
 "use client";
 
-import Button from "@/components/shared/button";
+import BetForm from "@/components/bets/bet-form";
 import Card from "@/components/shared/card";
-import Input from "@/components/shared/input";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
 import { getActiveRound, setActiveRound } from "@/lib/rounds/round";
@@ -12,37 +11,28 @@ import { Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 function HomePage() {
-
-  const activeRound = useSelector((state: RootState) => state.rounds.activeRound);
+  const activeRound = useSelector(
+    (state: RootState) => state.rounds.activeRound
+  );
   const loading = useSelector((state: RootState) => state.rounds.loading);
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
- 
 
-  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [roundEndTime, setRoundEndTime] = useState<Date | null>(null);
   const [nextRoundTime, setNextRoundTime] = useState<Date | null>(null);
   const roundCountdown = useCountdown(roundEndTime);
   const nextRoundCountdown = useCountdown(nextRoundTime);
 
-  const onSelectNumber = (num: number) => {
-    setSelectedNumbers((prev) => [...prev, num]);
-  };
-
-
   useEffect(() => {
-    dispatch(getActiveRound())
+    dispatch(getActiveRound());
   }, [dispatch]);
 
   useEffect(() => {
-    if(!activeRound) return;
+    if (!activeRound) return;
     const endTime = addTime(activeRound.createdAt, 4, 30);
     setRoundEndTime(endTime);
     setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
-    
   }, [activeRound]);
 
   useEffect(() => {
@@ -51,8 +41,6 @@ function HomePage() {
     socket.on("roundCreated", (round: RoundType) => {
       console.log("New round created:", round);
       dispatch(setActiveRound(round));
-    
-      
     });
 
     return () => {
@@ -61,7 +49,7 @@ function HomePage() {
   }, [socket]);
   return (
     <>
-      {isConnected && loading !=='pending' ? (
+      {isConnected && loading !== "pending" ? (
         <div className="w-full ">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-2">
@@ -90,7 +78,8 @@ function HomePage() {
                     <div className="flex space-x-2 items-center">
                       <Clock className="text-orange-400" size={28} />
                       <div className="text-xl font-bold text-orange-400">
-                        {nextRoundCountdown.minutes}:{String(nextRoundCountdown.seconds).padStart(2, '0')}
+                        {nextRoundCountdown.minutes}:
+                        {String(nextRoundCountdown.seconds).padStart(2, "0")}
                       </div>
                     </div>
                   </Card>
@@ -102,7 +91,8 @@ function HomePage() {
                   <div className="flex space-x-2 items-center">
                     <Clock className="text-orange-400" size={28} />
                     <div className="text-xl font-bold text-orange-400">
-                      {roundCountdown.minutes}:{String(roundCountdown.seconds).padStart(2, '0')}
+                      {roundCountdown.minutes}:
+                      {String(roundCountdown.seconds).padStart(2, "0")}
                     </div>
                   </div>
                 </Card>
@@ -115,72 +105,7 @@ function HomePage() {
 
           {/* bet card */}
 
-          <Card className="py-6 px-4">
-            <h1 className="text-orange-400 text-lg ">Place Bet</h1>
-            <p className="text-gray-50 text-lg py-4">
-              Select your lucky numbers(0-9)
-            </p>
-
-            {/* display a grid of numbers between 0-9 */}
-            <div className="grid grid-cols-5 gap-4 mt-8">
-              {numbers.map((num) => (
-                <div
-                  key={num}
-                  onClick={() => onSelectNumber(num)}
-                  className={` rounded-lg flex items-center justify-center h-12 w-12 cursor-pointer  transition-all ${
-                    selectedNumbers.includes(num)
-                      ? "bg-orange-400 text-gray-50"
-                      : "bg-gray-700 text-gray-200 hover:bg-gray-700/80"
-                  }`}
-                >
-                  {num}
-                </div>
-              ))}
-            </div>
-
-            {/* display selected numbers and give an option to remove a number */}
-            <div className="mt-4">
-              <h2 className="text-gray-300 mb-2">Selected Numbers:</h2>
-              <div className="flex space-x-4">
-                {selectedNumbers.map((num) => (
-                  <div
-                    key={num}
-                    onClick={() =>
-                      setSelectedNumbers((prev) =>
-                        prev.filter((n) => n !== num)
-                      )
-                    }
-                    className="bg-orange-400 text-gray-50 px-4 py-2 rounded-lg cursor-pointer hover:bg-orange-500 transition-all"
-                  >
-                    {num} &times;
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* display an input for amount */}
-            <div className="mt-4">
-              <Input
-                label="Bet Amount"
-                type="number"
-                value={0}
-                onChange={(val) => console.log(val)}
-                placeholder="Enter amount in USD"
-                required
-                Icon={Clock}
-              />
-            </div>
-            {/* place bet button */}
-            <div className="mt-4 text-center">
-              <Button
-                variant="primary"
-                onClick={() => console.log("Place Bet")}
-                disabled={selectedNumbers.length !== 3}
-              >
-                Place Bet
-              </Button>
-            </div>
-          </Card>
+          <BetForm />
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center ">
