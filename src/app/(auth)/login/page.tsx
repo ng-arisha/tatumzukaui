@@ -1,9 +1,7 @@
+import AuthenticationForm from "@/components/auth/authentication-form";
+
 function LoginPage() {
-    return (
-        <div>
-            Login
-        </div>
-    )
+  return <AuthenticationForm page="login" />;
 }
 
-export default LoginPage
+export default LoginPage;
