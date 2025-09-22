@@ -1,8 +1,22 @@
 @import "tailwindcss";
 
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  prefersdark: true;
+
+  --color-primary: #0d0d0d;
+  --color-primary-content: #f9fafb;
+
+  --color-secondary: #1f2937;
+  --color-secondary-content: #374151;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0d0d;
+  --foreground: #f9fafb;
 }
 
 @theme inline {
@@ -14,8 +28,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0d0d0d;
+    --foreground: #f9fafb;
   }
 }
 
