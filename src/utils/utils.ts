@@ -11,3 +11,13 @@ export const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country);
     return ["tz"].includes(iso2);
   });
+
+
+  export const formatCurrency=(amount:number)=>{
+    return new Intl.NumberFormat('en-TZ',{
+        style:'currency',
+        currency:'TZS',
+        minimumFractionDigits:0,
+        maximumFractionDigits:0
+    }).format(amount);
+  }

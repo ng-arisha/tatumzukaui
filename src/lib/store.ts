@@ -5,6 +5,7 @@ import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import authReducer from "./auth/auth";
 import betReducer from "./bets/bet";
 import roundReducer from "./rounds/round";
+import useReducer from "./user/user";
 
 const createNoopStorage = () => {
     return {
@@ -36,7 +37,8 @@ export const store = configureStore({
     reducer:{
         auth:persistedAuthReducer,
         rounds:roundReducer,
-        bets:betReducer
+        bets:betReducer,
+        user:useReducer
     },
     middleware:(getDefaultMiddleware)=>getDefaultMiddleware({
       serializableCheck:{
