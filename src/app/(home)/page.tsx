@@ -45,7 +45,7 @@ function HomePage() {
     socket.on("roundCreated", (round: RoundType) => {
       console.log("New round created:", round);
       dispatch(setActiveRound(round));
-      dispatch(getUserBalance())
+      dispatch(getUserBalance());
     });
 
     return () => {
@@ -61,7 +61,7 @@ function HomePage() {
               Numbers Game
             </h1>
             <p className="text-gray-500">
-              Choose your three Lucky numbers and Place your Bet
+              Choose your two Lucky numbers and Place your Bet
             </p>
           </div>
 
