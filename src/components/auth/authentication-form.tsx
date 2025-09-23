@@ -54,7 +54,8 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
       if (res.meta.requestStatus === "fulfilled") {
         router.push("/login");
       }
-    } else {
+    } 
+    if(page === "login"){
       const res = await dispatch(login(data));
       if (res.meta.requestStatus === "fulfilled") {
         router.push("/");
