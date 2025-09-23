@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Cookie from "js-cookie";
 
 interface InitialUserState {
@@ -40,7 +40,11 @@ export const getUserBalance = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setBalance: (state, action:PayloadAction<WalletType>)=>{
+        state.wallet = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     // handle get user balance
     builder.addCase(getUserBalance.pending, (state) => {
@@ -59,4 +63,4 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const {} = userSlice.actions;
+export const {setBalance} = userSlice.actions;

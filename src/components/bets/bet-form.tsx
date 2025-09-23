@@ -2,6 +2,7 @@
 
 import { placeBet } from "@/lib/bets/bet";
 import { AppDispatch, RootState } from "@/lib/store";
+import { getUserBalance } from "@/lib/user/user";
 import { Loader2Icon, Wallet } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -40,6 +41,7 @@ function BetForm() {
         await dispatch(placeBet(data));
         setSelectedNumbers([]);
         setAmount(0);
+        dispatch(getUserBalance())
       }
     return (
         <Card className="py-6 px-4">

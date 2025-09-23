@@ -6,6 +6,7 @@ import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
 import { getActiveRound, setActiveRound } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
+import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
 import { Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -36,11 +37,15 @@ function HomePage() {
   }, [activeRound]);
 
   useEffect(() => {
+    
     if (!socket) return;
+
+    socket.connect();
 
     socket.on("roundCreated", (round: RoundType) => {
       console.log("New round created:", round);
       dispatch(setActiveRound(round));
+      dispatch(getUserBalance())
     });
 
     return () => {

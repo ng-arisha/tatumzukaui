@@ -1,8 +1,10 @@
 "use client";
 
+import { useSocket } from "@/hooks/useSocket";
 import { AppDispatch, RootState } from "@/lib/store";
-import { getUserBalance } from "@/lib/user/user";
+import { getUserBalance, setBalance } from "@/lib/user/user";
 import { formatCurrency } from "@/utils/utils";
+import Cookie from "js-cookie";
 import { Loader2Icon, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -16,17 +18,21 @@ function TopNavigation() {
     useEffect(()=>{
         dispatch(getUserBalance())
     },[dispatch])
-    // const { socket } = useSocket();
-    // useEffect(()=>{
+    const { socket } = useSocket();
+    useEffect(()=>{
 
-    // if (!socket) return;
-    // socket.on("walletUpdated", (walletDat:any) => {
-    //     console.log("Wallet updated:", walletDat);
-    // });
-    // return () => {
-    //     socket.off("connect");
-    // }
-    // },[socket])
+    if (!socket) return;
+    const token = Cookie.get('token')!;
+    socket.auth = {token};
+    socket.connect();
+    socket.on("walletUpdated", (walletDat:WalletType) => {
+        console.log("Wallet updated:", walletDat);
+        dispatch(setBalance(walletDat));
+    });
+    return () => {
+        socket.off("connect");
+    }
+    },[socket])
   return (
     <div className="navbar bg-primary shadow-sm">
       <div className="flex-1">
