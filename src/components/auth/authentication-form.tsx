@@ -219,7 +219,7 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
                 href="/register"
                 className="text-orange-400 hover:underline"
               >
-                Don't have an account? Register
+                Don&apos;t have an account? Register
               </Link>
             ) : (
               <Link href="/login" className="text-orange-400 hover:underline">

@@ -34,7 +34,7 @@ function BetForm() {
             return;
         }
         const data = {
-            roundId: activeRound?.id!,
+            roundId: activeRound!.id!,
             guess: selectedNumbers,
             amount: amount // replace with actual amount from input
         }
