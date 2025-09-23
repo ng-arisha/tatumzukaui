@@ -8,7 +8,7 @@ export function useSocket(){
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        socket = io("http://localhost:3000"),{
+        socket = io("https://tatumzuka-4ie6v.ondigitalocean.app"),{
             autoconnect: false,
             transports: ['websocket'],
             
