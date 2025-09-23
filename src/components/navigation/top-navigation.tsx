@@ -1,7 +1,22 @@
+"use client";
+
+import { useSocket } from "@/hooks/useSocket";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
 
 function TopNavigation() {
+    const { socket } = useSocket();
+    useEffect(()=>{
+
+    if (!socket) return;
+    socket.on("walletUpdated", (walletDat:any) => {
+        console.log("Wallet updated:", walletDat);
+    });
+    return () => {
+        socket.off("connect");
+    }
+    },[socket])
   return (
     <div className="navbar bg-primary shadow-sm">
       <div className="flex-1">
@@ -15,7 +30,7 @@ function TopNavigation() {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <span className="text-sm text-gray-500">TZS: 1200</span>
+            <span className="text-sm text-gray-500">{ `Tzs: 3000`}</span>
           </li>
           <li>
             

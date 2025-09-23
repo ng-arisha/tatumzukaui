@@ -15,3 +15,8 @@ declare type CustomeJwtPayload = {
     exp: number;
     role: string;
 }
+
+declare type WalletType ={
+    balance: number;
+    currency: string;
+}

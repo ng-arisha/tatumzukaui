@@ -1,3 +1,4 @@
+import Cookie from "js-cookie";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -9,7 +10,11 @@ export function useSocket(){
 
     useEffect(() => {
         socket = io("http://localhost:3000"),{
+            auth: {
+                token: Cookie.get("token")!
+            },
             transports: ['websocket'],
+            
             
         };
         socket.on("connect", () => {
