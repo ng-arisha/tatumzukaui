@@ -5,10 +5,12 @@ import toast from "react-hot-toast";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 interface InitialBetTye {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+    userBets: BetType[];
 }
 
 const initialState: InitialBetTye = {
     loading: 'idle',
+    userBets: []
     
 }
 
@@ -37,6 +39,24 @@ export const placeBet = createAsyncThunk("bet/placeBet",
     }
 )
 
+export const getUserBets = createAsyncThunk("bet/getUserBets",
+    async(_,{rejectWithValue})=>{
+        const response = await fetch(`${BASE_URL}/bet/history`,{
+            method:"GET",
+            headers:{
+                "content-Type":"application/json",
+                Authorization:`Bearer ${Cookie.get("token")}`
+            }
+        });
+        if(!response.ok){
+            const errorData = await response.json();
+            return rejectWithValue(errorData.message || "Fetching bets failed");
+        }
+        const result = await response.json();
+        return result;
+    }
+)
+
 const betSlice = createSlice({
     name: 'bet',
     initialState,
@@ -55,6 +75,21 @@ const betSlice = createSlice({
             state.loading = 'failed';
             toast.error(`Placing bet failed: ${payload}`);
         })
+
+        // handle get user bets
+        builder.addCase(getUserBets.pending,(state)=>{
+            state.loading = 'pending';
+        })
+        builder.addCase(getUserBets.fulfilled,(state,action)=>{
+            state.loading = 'succeeded';
+            state.userBets = action.payload;
+        }
+        )
+        builder.addCase(getUserBets.rejected,(state,{payload})=>{
+            state.loading = 'failed';
+            toast.error(`Fetching bets failed: ${payload}`);
+        }
+        )
     }
 })
 

@@ -20,3 +20,10 @@ declare type WalletType ={
     balance: number;
     currency: string;
 }
+declare type BetType = {
+    id: string;
+    guess: number[];
+    amount: number;
+    createdAt: string;
+    status: string;
+}
