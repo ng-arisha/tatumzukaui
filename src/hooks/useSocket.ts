@@ -8,7 +8,7 @@ export function useSocket(){
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        socket = io("https://tatumzuka-4ie6v.ondigitalocean.app"),{
+        socket = io(process.env.NEXT_PUBLIC_API_URL),{
             autoconnect: false,
             transports: ['websocket'],
             
