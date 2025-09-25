@@ -20,14 +20,21 @@ function SideNavigation() {
       {
         sideBarLinks.map(({title,url,Icon})=>(
             <li key={url}>
-                <Link href={url} className={`flex items-center space-x-2 text-gray-500 border  ${path === url ? 'border-orange-400':'border-transparent'}`}>
+                <Link 
+                onClick={()=>{
+                  const checkbox = document.getElementById('my-drawer-2') as HTMLInputElement;
+                  if(checkbox?.checked){
+                    checkbox.checked = false;
+                  }
+                }}
+                href={url} className={`flex items-center space-x-2 text-gray-500 border  ${path === url ? 'border-orange-400':'border-transparent'}`}>
                 <Icon size={20} />
                 <span>{title}</span>
                 </Link>
             </li>
         ))
       }
-      <li><a>Sidebar Item 2</a></li>
+     
     </ul>
   </div>
   );
