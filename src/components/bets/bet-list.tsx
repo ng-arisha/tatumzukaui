@@ -28,7 +28,7 @@ function BetList() {
         ):bets.length === 0 ? (
             <div className="h-[calc(100vh-14rem)] flex flex-col items-center justify-center text-gray-300 space-y-2">
                 <span className="text-red-400">You do not have any bets</span>
-                <Link href="/" className="text-gray-500 flex space-x-2">
+                <Link href="/" className="text-gray-500 flex space-x-2 items-center">
                 <ArrowBigLeft size={16} />
                 <span>Place a bet and come back</span>
                 </Link>

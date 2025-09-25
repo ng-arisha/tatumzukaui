@@ -27,3 +27,13 @@ declare type BetType = {
     createdAt: string;
     status: string;
 }
+
+declare type PaymentType = {
+    id: string;
+    reference: string;
+    amount: number;
+    status: string;
+    createdAt: string;
+    type: string;
+    provider: string;
+}

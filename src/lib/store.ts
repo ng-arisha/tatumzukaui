@@ -4,6 +4,7 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, R
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import authReducer from "./auth/auth";
 import betReducer from "./bets/bet";
+import paymentReducer from "./payment/payment";
 import roundReducer from "./rounds/round";
 import useReducer from "./user/user";
 
@@ -38,7 +39,8 @@ export const store = configureStore({
         auth:persistedAuthReducer,
         rounds:roundReducer,
         bets:betReducer,
-        user:useReducer
+        user:useReducer,
+        payment: paymentReducer
     },
     middleware:(getDefaultMiddleware)=>getDefaultMiddleware({
       serializableCheck:{
