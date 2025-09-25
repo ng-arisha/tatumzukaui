@@ -3,6 +3,7 @@
 import PaymentComponent from "@/components/payments/payment";
 import { transactionsTab } from "@/utils/utils";
 import { User } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 
@@ -49,6 +50,14 @@ function ProfilePage() {
                     <PaymentComponent tab={1} />
                 )
             }
+            </div>
+
+            <h3 className="uppercase text-lg text-gray-500 py-4">History</h3>
+
+            <div className="w-full flex justify-center items-center text-gray-500  pb-2 space-x-2">
+            <Link href="#" className="text-sm">Transaction History</Link>
+            <div className="h-4 w-[2px] bg-gray-400"/>
+            <Link href="#" className="text-sm">Bet History</Link>
             </div>
            
         </div>

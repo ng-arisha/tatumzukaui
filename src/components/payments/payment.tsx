@@ -13,7 +13,7 @@ function PaymentComponent({tab}:{tab:number}) {
 
             </h1>
 
-            <p className="text-gray-500 uppercase py-2">Default Amount</p>
+            <p className="text-gray-200 capitalize py-2 text-sm">Default Amount</p>
             <div className="flex space-x-1 overflow-x-auto py-2 scrollbar-hide">
                 {
                     defaultAmount.map((amount)=>(
