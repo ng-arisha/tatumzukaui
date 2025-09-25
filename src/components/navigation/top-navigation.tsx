@@ -3,7 +3,7 @@
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { formatCurrency } from "@/utils/utils";
-import { Loader2Icon, LogOut, MenuIcon } from "lucide-react";
+import { Loader2Icon, MenuIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,9 +45,9 @@ function TopNavigation() {
             </span>
           </li>
           <li>
-            <span className="text-gray-500 hover:text-gray-300 cursor-pointer">
-              <LogOut className=" " size={24} />
-            </span>
+            <Link href="/profile" className="text-gray-500 hover:text-gray-300 cursor-pointer">
+              <User className=" " size={24} />
+            </Link>
           </li>
         </ul>
       </div>
