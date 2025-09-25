@@ -1,16 +1,28 @@
 "use client";
 
 import PaymentComponent from "@/components/payments/payment";
+import { logout } from "@/lib/auth/auth";
+import { AppDispatch } from "@/lib/store";
 import { transactionsTab } from "@/utils/utils";
-import { User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState(0);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const handleChangeTab = (index: number) => {
     setActiveTab(index);
   };
+  
+
+  const handleLogout = () => {
+    dispatch(logout())
+    router.push('/login')
+  }
   return (
     <div className="flex flex-col items-center">
       <div className="py-1 w-full lg:max-w-md">
@@ -46,13 +58,18 @@ function ProfilePage() {
         <h3 className="uppercase text-lg text-gray-500 py-4">History</h3>
 
         <div className="w-full flex justify-center items-center text-gray-500  pb-2 space-x-2">
-          <Link href="#" className="text-sm">
+          <Link href="/transaction" className="text-sm">
             Transaction History
           </Link>
           <div className="h-4 w-[2px] bg-gray-400" />
-          <Link href="#" className="text-sm">
+          <Link href="/bet-history" className="text-sm">
             Bet History
           </Link>
+        </div>
+
+        <div onClick={handleLogout} className="mt-6 flex justify-center items-center text-orange-600  space-x-2">
+          <LogOut size={16} />
+          <span className="text-sm cursor-pointer">Logout</span>
         </div>
       </div>
     </div>

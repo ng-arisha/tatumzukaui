@@ -56,7 +56,13 @@ export const login = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.token = null;
+      Cookie.remove("token");
+      toast.success("Logged out successfully");
+    },
+  },
   extraReducers: (builder) => {
     // handleregister
     builder.addCase(register.pending, (state) => {
@@ -65,14 +71,14 @@ const authSlice = createSlice({
     builder.addCase(register.fulfilled, (state, action) => {
       state.IsLoading = "succeeded";
       state.token = action.payload.token;
-      
+
       toast.success("Registration successful");
     });
     builder.addCase(register.rejected, (state, action) => {
       state.IsLoading = "failed";
       state.token = null;
       console.log("Registration error:", action.payload);
-      toast.error(`an error occured:${action.payload}`)
+      toast.error(`an error occured:${action.payload}`);
     });
     // handle login
     builder.addCase(login.pending, (state) => {
@@ -84,14 +90,14 @@ const authSlice = createSlice({
       Cookie.set("token", action.payload.access_token, { expires: 1 }); // Expires in 1 day
       toast.success("Login successful");
     });
-    builder.addCase(login.rejected, (state, {payload}) => {
+    builder.addCase(login.rejected, (state, { payload }) => {
       state.IsLoading = "failed";
       state.token = null;
       console.log("Login error:", payload);
-      toast.error(`an error occured:${payload}`)
+      toast.error(`an error occured:${payload}`);
     });
   },
 });
 
 export default authSlice.reducer;
-export const {} = authSlice.actions;
+export const { logout } = authSlice.actions;
