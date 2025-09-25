@@ -1,5 +1,6 @@
 "use client";
 
+import PaymentComponent from "@/components/payments/payment";
 import { transactionsTab } from "@/utils/utils";
 import { User } from "lucide-react";
 import { useState } from "react";
@@ -11,7 +12,7 @@ function ProfilePage() {
         setActiveTab(index);
     }
     return (
-        <div className="flex flex-col items-center  px-4">
+        <div className="flex flex-col items-center">
             <div className="py-1 w-full lg:max-w-md">
            <div className="py-4 px-4 border border-orange-500/90 rounded-lg flex space-x-2 items-center">
             <div className="h-16 w-16 rounded-full bg-gray-200 animate-pulse">
@@ -33,6 +34,20 @@ function ProfilePage() {
                         <span>{title}</span>
                     </div>
                 ))
+            }
+            </div>
+            <div className="w-full overflow-x-auto">
+            {
+                activeTab === 0 && (
+                    <PaymentComponent tab={0} />
+                )
+
+        
+            }
+            {
+                activeTab === 1 && (
+                    <PaymentComponent tab={1} />
+                )
             }
             </div>
            
