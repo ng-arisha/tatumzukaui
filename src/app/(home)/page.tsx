@@ -1,6 +1,7 @@
 "use client";
 
 import BetForm from "@/components/bets/bet-form";
+import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display";
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
@@ -43,10 +44,14 @@ function HomePage() {
     socket.connect();
 
     socket.on("roundCreated", (round: RoundType) => {
-      console.log("New round created:", round);
+      
       dispatch(setActiveRound(round));
       dispatch(getUserBalance());
     });
+
+    socket.on("firstTenRounds",(rounds:RoundType[])=>{
+      console.log("First ten rounds updated:", rounds);
+    })
 
     return () => {
       socket.off("roundCreated");
@@ -107,6 +112,9 @@ function HomePage() {
               </div>
             )}
           </div>
+
+            {/*Display top 10 rounds  */}
+            <FirstTenRoundsDisplay />
 
           {/* bet card */}
 

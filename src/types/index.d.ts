@@ -4,7 +4,7 @@ declare type RoundType = {
     createdAt: string;
     id: string;
     kind: string;
-    nmumbers: number[];
+    numbers: number[];
     status: string;
 }
 
