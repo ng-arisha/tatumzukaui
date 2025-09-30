@@ -5,7 +5,7 @@ import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display"
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActiveRound, setActiveRound } from "@/lib/rounds/round";
+import { getActiveRound, setActiveRound, setFirstTenRounds } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
@@ -51,6 +51,7 @@ function HomePage() {
 
     socket.on("firstTenRounds",(rounds:RoundType[])=>{
       console.log("First ten rounds updated:", rounds);
+      dispatch(setFirstTenRounds(rounds))
     })
 
     return () => {
