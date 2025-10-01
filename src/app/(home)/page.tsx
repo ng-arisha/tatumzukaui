@@ -6,13 +6,14 @@ import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display"
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActivePickFiveRound, getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
+import { getActivePickFiveRound, getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFiveActiveRound, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
 import { Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 
 function HomePage() {
   const activePickTwoRound = useSelector(
@@ -77,8 +78,8 @@ function HomePage() {
       
     });
     socket.on("pickFiveRoundCreated", (round: RoundType) => {
-      console.log("Pick four Round Created:", round);
-      dispatch(setPickFourActiveRound(round));
+      console.log("Pick five Round Created:", round);
+      dispatch(setPickFiveActiveRound(round));
       
     });
 
