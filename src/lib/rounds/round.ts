@@ -6,6 +6,7 @@ interface InitialRoundState {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed';
     activeRound: RoundType | null;
     activePickThree:RoundType | null;
+    activePickFour:RoundType | null;
     rounds: RoundType[];
     loadingRounds: 'idle' | 'pending' | 'succeeded' | 'failed';
 }
@@ -15,7 +16,8 @@ const initialState: InitialRoundState = {
     activeRound: null,
     rounds: [],
     loadingRounds: 'idle',
-    activePickThree:null
+    activePickThree:null,
+    activePickFour:null
 }
 
 
@@ -57,6 +59,30 @@ export const getPickThreeActiveRound = createAsyncThunk("rounds/pickThreeActive"
     }
 )
 
+export const getPickFourActiveRound = createAsyncThunk("rounds/pickFourActive",
+    async(_,{rejectWithValue})=>{
+        try {
+            const response = await fetch(`${BASE_URL}/round/active-pick-four`,{
+                method:"GET",
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            });
+            if(!response.ok){
+                const errorData = await response.json();
+                return rejectWithValue(errorData.message || "Fetching pick four active round failed")
+            }
+            const result = await response.json();
+            return result;
+            
+        } catch (error) {
+            rejectWithValue(error)
+            
+        }
+    }
+)
+
+
 export const getFirstTenRounds = createAsyncThunk("rounds/getFirastTen",
     async(_,{rejectWithValue})=>{
         try {
@@ -92,7 +118,11 @@ const roundSlice = createSlice({
         },
         setPickThreeActiveRound:(state,action:PayloadAction<RoundType>)=>{
             state.activePickThree = action.payload;
+        },
+        setPickFourActiveRound:(state,action:PayloadAction<RoundType>)=>{
+            state.activePickFour = action.payload;
         }
+
     },
     extraReducers: (builder) => {
         // handle active round
@@ -140,8 +170,25 @@ const roundSlice = createSlice({
         }
         )
 
+        // handle pick four active round
+        builder.addCase(getPickFourActiveRound.pending,(state)=>{
+            state.loading = 'pending';
+        }
+        )
+        builder.addCase(getPickFourActiveRound.fulfilled,(state,action)=>{
+            state.loading = 'succeeded';
+            state.activePickFour = action.payload;
+            console.log('Active round fetched:', action.payload);
+        }
+        )
+        builder.addCase(getPickFourActiveRound.rejected,(state)=>{
+            state.loading = 'failed';
+            state.activePickFour = null;
+        }
+        )
+
     }
 })
 
 export default roundSlice.reducer;
-export const {setActiveRound,setFirstTenRounds,setPickThreeActiveRound} = roundSlice.actions;
+export const {setActiveRound,setFirstTenRounds,setPickThreeActiveRound,setPickFourActiveRound} = roundSlice.actions;

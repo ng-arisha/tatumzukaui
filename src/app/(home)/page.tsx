@@ -6,7 +6,7 @@ import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display"
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickThreeActiveRound } from "@/lib/rounds/round";
+import { getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
@@ -23,7 +23,8 @@ function HomePage() {
   );
   const loading = useSelector((state: RootState) => state.rounds.loading);
   const activePickThreeRound = useSelector((state:RootState)=>state.rounds.activePickThree)
-  const activeRound = gameVariant.count === 2 ? activePickTwoRound : activePickThreeRound;
+  const activePickFourRound = useSelector((state:RootState)=>state.rounds.activePickFour)
+  const activeRound = gameVariant.count === 2 ? activePickTwoRound : gameVariant.count === 3 ? activePickThreeRound : activePickFourRound;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -35,6 +36,7 @@ function HomePage() {
   useEffect(() => {
     dispatch(getActiveRound());
     dispatch(getPickThreeActiveRound());
+    dispatch(getPickFourActiveRound());
   }, [dispatch]);
 
   useEffect(() => {
@@ -64,7 +66,13 @@ function HomePage() {
     socket.on("pickThreeRoundCreated", (round: RoundType) => {
       console.log("Pick Three Round Created:", round);
       dispatch(setPickThreeActiveRound(round));
-      dispatch(getUserBalance());
+      
+    });
+
+    socket.on("pickFourRoundCreated", (round: RoundType) => {
+      console.log("Pick four Round Created:", round);
+      dispatch(setPickFourActiveRound(round));
+      
     });
 
     return () => {
