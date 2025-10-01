@@ -57,7 +57,7 @@ const userSlice = createSlice({
     builder.addCase(getUserBalance.rejected, (state, { payload }) => {
       state.loading = "failed";
       state.wallet = null;
-      console.error(payload);
+      
     });
   },
 });

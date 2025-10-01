@@ -68,3 +68,26 @@ export const countries = defaultCountries.filter((country) => {
       Icon:Download
     }
   ]
+
+  export const gameVarieties = [
+    {
+      label:"Pick-2",
+      value:"pick-two",
+      count:2
+    },
+    {
+      label:"Pick-3",
+      value:"pick-three",
+      count: 3
+    },
+    {
+      label:"Pick-4",
+      value:"pick-four",
+      count: 4
+    },
+    {
+      label:"Pick-5",
+      value:"pick-five",
+      count: 5
+    }
+  ]

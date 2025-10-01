@@ -15,6 +15,7 @@ const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function BetForm() {
      const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+     const selectedVariant = useSelector((state:RootState) => state.variants.variant);
      const onSelectNumber = (num: number) => {
         setSelectedNumbers((prev) => [...prev, num]);
       };
@@ -69,7 +70,12 @@ function BetForm() {
 
             {/* display selected numbers and give an option to remove a number */}
             <div className="mt-4">
-              <h2 className="text-gray-300 mb-2">Selected Numbers:</h2>
+              <h2 className="text-gray-300 text-sm mb-2">Selected: {selectedNumbers.length} / {selectedVariant.count}</h2>
+             {
+                selectedNumbers.length > 0 && (
+                  <h2 className="text-gray-500 text-sm mb-2">Your numbers: </h2>
+                )
+             }
               <div className="flex space-x-4">
                 {selectedNumbers.map((num) => (
                   <div

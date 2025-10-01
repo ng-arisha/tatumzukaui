@@ -37,3 +37,9 @@ declare type PaymentType = {
     type: string;
     provider: string;
 }
+
+declare type GameVariantType = {
+    label: string;
+    value: string;
+    count: number;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import BetForm from "@/components/bets/bet-form";
+import SelectGameVariant from "@/components/bets/select-game-variant";
 import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display";
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
@@ -50,7 +51,7 @@ function HomePage() {
     });
 
     socket.on("firstTenRounds",(rounds:RoundType[])=>{
-      console.log("First ten rounds updated:", rounds);
+      
       dispatch(setFirstTenRounds(rounds))
     })
 
@@ -67,9 +68,14 @@ function HomePage() {
               Numbers Game
             </h1>
             <p className="text-gray-500">
-              Choose your two Lucky numbers and Place your Bet
+              Choose your  Lucky numbers and Place your Bet
             </p>
           </div>
+
+          {/* game variants */}
+         <div className="flex justify-center items-center mt-2">
+         <SelectGameVariant />
+         </div>
 
           {/* timer */}
 

@@ -93,7 +93,7 @@ const roundSlice = createSlice({
             state.rounds = action.payload;
         }
         )
-        builder .addCase(getFirstTenRounds.rejected,(state,action)=>{
+        builder .addCase(getFirstTenRounds.rejected,(state)=>{
             state.loadingRounds = 'failed';
             state.rounds = [];
         }

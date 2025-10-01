@@ -7,6 +7,7 @@ import betReducer from "./bets/bet";
 import paymentReducer from "./payment/payment";
 import roundReducer from "./rounds/round";
 import useReducer from "./user/user";
+import gameVariants from "./variants/variant";
 
 const createNoopStorage = () => {
     return {
@@ -40,7 +41,8 @@ export const store = configureStore({
         rounds:roundReducer,
         bets:betReducer,
         user:useReducer,
-        payment: paymentReducer
+        payment: paymentReducer,
+        variants:gameVariants
     },
     middleware:(getDefaultMiddleware)=>getDefaultMiddleware({
       serializableCheck:{
