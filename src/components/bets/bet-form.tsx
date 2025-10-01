@@ -76,7 +76,7 @@ function BetForm() {
                   <h2 className="text-gray-500 text-sm mb-2">Your numbers: </h2>
                 )
              }
-              <div className="flex space-x-4">
+              <div className="flex space-x-2">
                 {selectedNumbers.map((num) => (
                   <div
                     key={num}
@@ -85,7 +85,7 @@ function BetForm() {
                         prev.filter((n) => n !== num)
                       )
                     }
-                    className="bg-orange-400 text-gray-50 px-4 py-2 rounded-lg cursor-pointer hover:bg-orange-500 transition-all"
+                    className="bg-orange-400 text-gray-50 px-3 py-2 rounded-lg cursor-pointer hover:bg-orange-500 transition-all"
                   >
                     {num} &times;
                   </div>
@@ -114,7 +114,7 @@ function BetForm() {
                     <Button
                 variant="primary"
                 onClick={handlePlaceBet}
-                disabled={selectedNumbers.length !== 2}
+                disabled={selectedNumbers.length !== selectedVariant.count || amount <=0}
               >
                 Place Bet
               </Button>
