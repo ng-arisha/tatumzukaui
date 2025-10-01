@@ -6,7 +6,7 @@ import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display"
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
+import { getActivePickFiveRound, getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
@@ -24,7 +24,8 @@ function HomePage() {
   const loading = useSelector((state: RootState) => state.rounds.loading);
   const activePickThreeRound = useSelector((state:RootState)=>state.rounds.activePickThree)
   const activePickFourRound = useSelector((state:RootState)=>state.rounds.activePickFour)
-  const activeRound = gameVariant.count === 2 ? activePickTwoRound : gameVariant.count === 3 ? activePickThreeRound : activePickFourRound;
+  const activePickFiveRound = useSelector((state:RootState)=>state.rounds.activePickFive)
+  const activeRound = gameVariant.count === 2 ? activePickTwoRound : gameVariant.count === 3 ? activePickThreeRound : gameVariant.count === 4 ? activePickFourRound : activePickFiveRound;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -37,6 +38,7 @@ function HomePage() {
     dispatch(getActiveRound());
     dispatch(getPickThreeActiveRound());
     dispatch(getPickFourActiveRound());
+    dispatch(getActivePickFiveRound());
   }, [dispatch]);
 
   useEffect(() => {
@@ -70,6 +72,11 @@ function HomePage() {
     });
 
     socket.on("pickFourRoundCreated", (round: RoundType) => {
+      console.log("Pick four Round Created:", round);
+      dispatch(setPickFourActiveRound(round));
+      
+    });
+    socket.on("pickFiveRoundCreated", (round: RoundType) => {
       console.log("Pick four Round Created:", round);
       dispatch(setPickFourActiveRound(round));
       

@@ -7,6 +7,7 @@ interface InitialRoundState {
     activeRound: RoundType | null;
     activePickThree:RoundType | null;
     activePickFour:RoundType | null;
+    activePickFive:RoundType | null;
     rounds: RoundType[];
     loadingRounds: 'idle' | 'pending' | 'succeeded' | 'failed';
 }
@@ -17,7 +18,8 @@ const initialState: InitialRoundState = {
     rounds: [],
     loadingRounds: 'idle',
     activePickThree:null,
-    activePickFour:null
+    activePickFour:null,
+    activePickFive:null
 }
 
 
@@ -82,8 +84,31 @@ export const getPickFourActiveRound = createAsyncThunk("rounds/pickFourActive",
     }
 )
 
+export const getActivePickFiveRound = createAsyncThunk("rounds/pickFiveActive",
+    async(_,{rejectWithValue})=>{
+        try {
+            const response = await fetch(`${BASE_URL}/round/active-pick-five`,{
+                method:"GET",
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            });
+            if(!response.ok){
+                const errorData = await response.json();
+                return rejectWithValue(errorData.message || "Fetching pick five active round failed")
+            }
+            const result = await response.json();
+            return result;
+            
+        } catch (error) {
+            rejectWithValue(error)
+            
+        }
+    }
+)
 
-export const getFirstTenRounds = createAsyncThunk("rounds/getFirastTen",
+
+export const getFirstTenRounds = createAsyncThunk("rounds/getFirstTen",
     async(_,{rejectWithValue})=>{
         try {
             const response = await fetch(`${BASE_URL}/round/first-ten`,{
@@ -121,6 +146,9 @@ const roundSlice = createSlice({
         },
         setPickFourActiveRound:(state,action:PayloadAction<RoundType>)=>{
             state.activePickFour = action.payload;
+        },
+        setPickFiveActiveRound:(state,action:PayloadAction<RoundType>)=>{
+            state.activePickFive = action.payload;
         }
 
     },
@@ -184,6 +212,23 @@ const roundSlice = createSlice({
         builder.addCase(getPickFourActiveRound.rejected,(state)=>{
             state.loading = 'failed';
             state.activePickFour = null;
+        }
+        )
+
+        // handle pick five active round
+        builder.addCase(getActivePickFiveRound.pending,(state)=>{
+            state.loading = 'pending';
+        }
+        )
+        builder.addCase(getActivePickFiveRound.fulfilled,(state,action)=>{
+            state.loading = 'succeeded';
+            state.activePickFive = action.payload;
+            console.log('Active round fetched:', action.payload);
+        }
+        )
+        builder.addCase(getActivePickFiveRound.rejected,(state)=>{
+            state.loading = 'failed';
+            state.activePickFive = null;
         }
         )
 
