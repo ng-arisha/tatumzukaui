@@ -6,7 +6,7 @@ import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display"
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActiveRound, setActiveRound, setFirstTenRounds } from "@/lib/rounds/round";
+import { getActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickThreeActiveRound } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
@@ -15,10 +15,15 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function HomePage() {
-  const activeRound = useSelector(
+  const activePickTwoRound = useSelector(
     (state: RootState) => state.rounds.activeRound
   );
+  const gameVariant = useSelector(
+    (state: RootState) => state.variants.variant
+  );
   const loading = useSelector((state: RootState) => state.rounds.loading);
+  const activePickThreeRound = useSelector((state:RootState)=>state.rounds.activePickThree)
+  const activeRound = gameVariant.count === 2 ? activePickTwoRound : activePickThreeRound;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -29,6 +34,7 @@ function HomePage() {
 
   useEffect(() => {
     dispatch(getActiveRound());
+    dispatch(getPickThreeActiveRound());
   }, [dispatch]);
 
   useEffect(() => {
@@ -54,6 +60,12 @@ function HomePage() {
       
       dispatch(setFirstTenRounds(rounds))
     })
+
+    socket.on("pickThreeRoundCreated", (round: RoundType) => {
+      console.log("Pick Three Round Created:", round);
+      dispatch(setPickThreeActiveRound(round));
+      dispatch(getUserBalance());
+    });
 
     return () => {
       socket.off("roundCreated");
@@ -125,7 +137,7 @@ function HomePage() {
 
           {/* bet card */}
 
-          <BetForm />
+          <BetForm activeRound={activeRound!} />
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center ">

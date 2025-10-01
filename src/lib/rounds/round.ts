@@ -5,6 +5,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 interface InitialRoundState {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed';
     activeRound: RoundType | null;
+    activePickThree:RoundType | null;
     rounds: RoundType[];
     loadingRounds: 'idle' | 'pending' | 'succeeded' | 'failed';
 }
@@ -13,7 +14,8 @@ const initialState: InitialRoundState = {
     loading: 'idle',
     activeRound: null,
     rounds: [],
-    loadingRounds: 'idle'
+    loadingRounds: 'idle',
+    activePickThree:null
 }
 
 
@@ -31,6 +33,27 @@ export const getActiveRound = createAsyncThunk("rounds/active",
         }
         const result = await response.json();
         return result;
+    }
+)
+
+export const getPickThreeActiveRound = createAsyncThunk("rounds/pickThreeActive",
+    async(_,{rejectWithValue})=>{
+        try {
+            const response = await fetch(`${BASE_URL}/round/active-pick-three`,{
+                method:"GET",
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            });
+            if(!response.ok){
+                const errorData = await response.json();
+                return rejectWithValue(errorData.message || "Fetching pick three active round failed")
+            }
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            rejectWithValue(error)
+        }
     }
 )
 
@@ -66,6 +89,9 @@ const roundSlice = createSlice({
         },
         setFirstTenRounds:(state,action:PayloadAction<RoundType[]>)=>{
             state.rounds = action.payload;
+        },
+        setPickThreeActiveRound:(state,action:PayloadAction<RoundType>)=>{
+            state.activePickThree = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -98,9 +124,24 @@ const roundSlice = createSlice({
             state.rounds = [];
         }
         )
+        // handle pick three active round
+        builder.addCase(getPickThreeActiveRound.pending,(state)=>{
+            state.loading = 'pending';
+        })
+        builder.addCase(getPickThreeActiveRound.fulfilled,(state,action)=>{
+            state.loading = 'succeeded';
+            state.activePickThree = action.payload;
+            console.log('Active round fetched:', action.payload);
+        }
+        )
+        builder.addCase(getPickThreeActiveRound.rejected,(state)=>{
+            state.loading = 'failed';
+            state.activePickThree = null;
+        }
+        )
 
     }
 })
 
 export default roundSlice.reducer;
-export const {setActiveRound,setFirstTenRounds} = roundSlice.actions;
+export const {setActiveRound,setFirstTenRounds,setPickThreeActiveRound} = roundSlice.actions;

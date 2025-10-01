@@ -13,7 +13,7 @@ import Input from "../shared/input";
 
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-function BetForm() {
+function BetForm({activeRound}:{activeRound: RoundType}) {
      const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
      const selectedVariant = useSelector((state:RootState) => state.variants.variant);
      const onSelectNumber = (num: number) => {
@@ -23,17 +23,18 @@ function BetForm() {
 
       const dispatch = useDispatch<AppDispatch>();
       const loading = useSelector((state: RootState) => state.bets.loading);
-      const activeRound = useSelector((state: RootState) => state.rounds.activeRound);
+      
 
       const handlePlaceBet = async() => {
-        if(selectedNumbers.length !==2){
-            toast.error("Please select exactly two numbers");
+        if(selectedNumbers.length !== selectedVariant.count){
+            toast.error(`Please select exactly ${selectedVariant.count} numbers`);
             return;
         }
         if(amount <=0){
             toast.error("Please enter a valid amount");
             return;
         }
+        console.log(`Placing bet on a round of kind ${activeRound.kind}`)
         const data = {
             roundId: activeRound!.id!,
             guess: selectedNumbers,
