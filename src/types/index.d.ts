@@ -43,3 +43,8 @@ declare type GameVariantType = {
     value: string;
     count: number;
 }
+
+declare type GameType = {
+    label: string;
+    value: string;
+}

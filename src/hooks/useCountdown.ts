@@ -4,7 +4,11 @@ export function useCountdown(targetTime:Date | null){
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
     useEffect(() => {
-        if (!targetTime) return;
+        if (!targetTime) {
+            setTimeLeft(0);
+
+            return
+        }
 
         const interval = setInterval(() => {
             const now = new Date().getTime();

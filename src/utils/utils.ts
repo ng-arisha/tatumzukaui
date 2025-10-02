@@ -91,3 +91,15 @@ export const countries = defaultCountries.filter((country) => {
       count: 5
     }
   ]
+
+  export const gameTypes = [
+    {
+      label:"Normal Draw",
+      value:"normal-draw"
+    },
+    {
+      label:"Insta Play",
+      value:"insta-play"
+    }
+    
+  ]

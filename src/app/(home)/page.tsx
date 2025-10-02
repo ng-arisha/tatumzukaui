@@ -1,12 +1,24 @@
 "use client";
 
 import BetForm from "@/components/bets/bet-form";
+import SelectGameType from "@/components/bets/select-game-type";
+
 import SelectGameVariant from "@/components/bets/select-game-variant";
 import FirstTenRoundsDisplay from "@/components/rounds/first-ten-rounds-display";
 import Card from "@/components/shared/card";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useSocket } from "@/hooks/useSocket";
-import { getActivePickFiveRound, getActiveRound, getPickFourActiveRound, getPickThreeActiveRound, setActiveRound, setFirstTenRounds, setPickFiveActiveRound, setPickFourActiveRound, setPickThreeActiveRound } from "@/lib/rounds/round";
+import {
+  getActivePickFiveRound,
+  getActiveRound,
+  getPickFourActiveRound,
+  getPickThreeActiveRound,
+  setActiveRound,
+  setFirstTenRounds,
+  setPickFiveActiveRound,
+  setPickFourActiveRound,
+  setPickThreeActiveRound,
+} from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
 import { addTime } from "@/utils/utils";
@@ -14,19 +26,31 @@ import { Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-
 function HomePage() {
   const activePickTwoRound = useSelector(
     (state: RootState) => state.rounds.activeRound
   );
-  const gameVariant = useSelector(
-    (state: RootState) => state.variants.variant
-  );
+  const gameVariant = useSelector((state: RootState) => state.variants.variant);
+
+  const game = useSelector((state: RootState) => state.variants.game);
   const loading = useSelector((state: RootState) => state.rounds.loading);
-  const activePickThreeRound = useSelector((state:RootState)=>state.rounds.activePickThree)
-  const activePickFourRound = useSelector((state:RootState)=>state.rounds.activePickFour)
-  const activePickFiveRound = useSelector((state:RootState)=>state.rounds.activePickFive)
-  const activeRound = gameVariant.count === 2 ? activePickTwoRound : gameVariant.count === 3 ? activePickThreeRound : gameVariant.count === 4 ? activePickFourRound : activePickFiveRound;
+  const activePickThreeRound = useSelector(
+    (state: RootState) => state.rounds.activePickThree
+  );
+  const activePickFourRound = useSelector(
+    (state: RootState) => state.rounds.activePickFour
+  );
+  const activePickFiveRound = useSelector(
+    (state: RootState) => state.rounds.activePickFive
+  );
+  const normalDrawRounds = gameVariant.count === 2
+  ? activePickTwoRound
+  : gameVariant.count === 3
+  ? activePickThreeRound
+  : gameVariant.count === 4
+  ? activePickFourRound
+  : activePickFiveRound;
+  const activeRound = game.value === "normal-draw" ? normalDrawRounds : null;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -42,45 +66,45 @@ function HomePage() {
     dispatch(getActivePickFiveRound());
   }, [dispatch]);
 
+  useEffect(()=>{},[game])
+
   useEffect(() => {
-    if (!activeRound) return;
+    if (!activeRound) {
+      setRoundEndTime(null);
+      setNextRoundTime(null);
+      return;
+    }
     const endTime = addTime(activeRound.createdAt, 4, 30);
     setRoundEndTime(endTime);
     setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
   }, [activeRound]);
 
   useEffect(() => {
-    
     if (!socket) return;
 
     socket.connect();
 
     socket.on("roundCreated", (round: RoundType) => {
-      
       dispatch(setActiveRound(round));
       dispatch(getUserBalance());
     });
 
-    socket.on("firstTenRounds",(rounds:RoundType[])=>{
-      
-      dispatch(setFirstTenRounds(rounds))
-    })
+    socket.on("firstTenRounds", (rounds: RoundType[]) => {
+      dispatch(setFirstTenRounds(rounds));
+    });
 
     socket.on("pickThreeRoundCreated", (round: RoundType) => {
       console.log("Pick Three Round Created:", round);
       dispatch(setPickThreeActiveRound(round));
-      
     });
 
     socket.on("pickFourRoundCreated", (round: RoundType) => {
       console.log("Pick four Round Created:", round);
       dispatch(setPickFourActiveRound(round));
-      
     });
     socket.on("pickFiveRoundCreated", (round: RoundType) => {
       console.log("Pick five Round Created:", round);
       dispatch(setPickFiveActiveRound(round));
-      
     });
 
     return () => {
@@ -96,14 +120,20 @@ function HomePage() {
               Numbers Game
             </h1>
             <p className="text-gray-500">
-              Choose your  Lucky numbers and Place your Bet
+              Choose your Lucky numbers and Place your Bet
             </p>
+          </div>
+          {/* display game types(insta play and normal draw) */}
+          <div className="flex justify-center items-center mt-4">
+            <SelectGameType />
           </div>
 
           {/* game variants */}
-         <div className="flex justify-center items-center mt-2">
-         <SelectGameVariant />
-         </div>
+          {game.value === "normal-draw" && (
+            <div className="flex justify-center items-center mt-2">
+              <SelectGameVariant />
+            </div>
+          )}
 
           {/* timer */}
 
@@ -148,8 +178,8 @@ function HomePage() {
             )}
           </div>
 
-            {/*Display top 10 rounds  */}
-            <FirstTenRoundsDisplay />
+          {/*Display top 10 rounds  */}
+          <FirstTenRoundsDisplay />
 
           {/* bet card */}
 
