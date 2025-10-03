@@ -69,7 +69,7 @@ const betSlice = createSlice({
         })
         builder.addCase(placeBet.fulfilled,(state)=>{
             state.loading = 'succeeded';
-            toast.success("Bet placed successfully");
+            // toast.success("Bet placed successfully");
         })
         builder.addCase(placeBet.rejected,(state,{payload})=>{
             state.loading = 'failed';

@@ -11,13 +11,21 @@ import { useSocket } from "@/hooks/useSocket";
 import {
   getActivePickFiveRound,
   getActiveRound,
+  getInstantPickFiveActiveRound,
+  getInstantPickFourActiveRound,
+  getInstantPickThreeActiveRound,
+  getInstantPickTwoActiveRound,
   getPickFourActiveRound,
   getPickThreeActiveRound,
   setActiveRound,
   setFirstTenRounds,
   setPickFiveActiveRound,
+  setPickFiveInstantActiveRound,
   setPickFourActiveRound,
+  setPickFourInstantActiveRound,
   setPickThreeActiveRound,
+  setPickThreeInstantActiveRound,
+  setPickTwoInstantActiveRound,
 } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
@@ -32,6 +40,11 @@ function HomePage() {
   );
   const gameVariant = useSelector((state: RootState) => state.variants.variant);
 
+  const activeInstantPickTwoRound = useSelector((state:RootState)=>state.rounds.activeInstantPickTwo)
+  const activeInstantPickThreeRound = useSelector((state:RootState)=>state.rounds.activeInstantPickThree)
+  const activeInstantPickFourRound = useSelector((state:RootState)=>state.rounds.activeInstantPickFour)
+  const activeInstantPickFiveRound = useSelector((state:RootState)=>state.rounds.activeInstantPickFive)
+  
   const game = useSelector((state: RootState) => state.variants.game);
   const loading = useSelector((state: RootState) => state.rounds.loading);
   const activePickThreeRound = useSelector(
@@ -43,6 +56,13 @@ function HomePage() {
   const activePickFiveRound = useSelector(
     (state: RootState) => state.rounds.activePickFive
   );
+  const instantDrawRounds = gameVariant.count === 2
+  ? activeInstantPickTwoRound
+  : gameVariant.count === 3
+  ? activeInstantPickThreeRound
+  : gameVariant.count === 4
+  ? activeInstantPickFourRound
+  : activeInstantPickFiveRound;
   const normalDrawRounds = gameVariant.count === 2
   ? activePickTwoRound
   : gameVariant.count === 3
@@ -50,7 +70,7 @@ function HomePage() {
   : gameVariant.count === 4
   ? activePickFourRound
   : activePickFiveRound;
-  const activeRound = game.value === "normal-draw" ? normalDrawRounds : null;
+  const activeRound = game.value === "normal-draw" ? normalDrawRounds : instantDrawRounds;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -64,6 +84,10 @@ function HomePage() {
     dispatch(getPickThreeActiveRound());
     dispatch(getPickFourActiveRound());
     dispatch(getActivePickFiveRound());
+    dispatch(getInstantPickTwoActiveRound());
+    dispatch(getInstantPickThreeActiveRound());
+    dispatch(getInstantPickFourActiveRound());
+    dispatch(getInstantPickFiveActiveRound());
   }, [dispatch]);
 
   useEffect(()=>{},[game])
@@ -74,10 +98,18 @@ function HomePage() {
       setNextRoundTime(null);
       return;
     }
-    const endTime = addTime(activeRound.createdAt, 4, 30);
+    if(game.value==="insta-play"){
+      const endTime = addTime(activeRound.createdAt, 0, 5);
+      setRoundEndTime(endTime);
+      setNextRoundTime(new Date(endTime.getTime() + 5 * 1000));
+
+    }else{
+      const endTime = addTime(activeRound.createdAt, 4, 30);
     setRoundEndTime(endTime);
     setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
-  }, [activeRound]);
+    }
+    
+  }, [activeRound,game]);
 
   useEffect(() => {
     if (!socket) return;
@@ -96,6 +128,7 @@ function HomePage() {
     socket.on("pickThreeRoundCreated", (round: RoundType) => {
       console.log("Pick Three Round Created:", round);
       dispatch(setPickThreeActiveRound(round));
+      
     });
 
     socket.on("pickFourRoundCreated", (round: RoundType) => {
@@ -105,6 +138,28 @@ function HomePage() {
     socket.on("pickFiveRoundCreated", (round: RoundType) => {
       console.log("Pick five Round Created:", round);
       dispatch(setPickFiveActiveRound(round));
+      
+    });
+
+    socket.on("instantRoundCreated", (round: RoundType) => {
+      console.log("Pick two instant Round Created:", round);
+      dispatch(setPickTwoInstantActiveRound(round));
+      dispatch(getUserBalance());
+    });
+
+    socket.on("pickThreeInstantRoundCreated", (round: RoundType) => {
+      console.log("Pick three instant Round Created:", round);
+      dispatch(setPickThreeInstantActiveRound(round));
+    });
+
+    socket.on("pickFourInstantRoundCreated", (round: RoundType) => {
+      console.log("Pick four instant Round Created:", round);
+      dispatch(setPickFourInstantActiveRound(round));
+    });
+
+    socket.on("pickFiveInstantRoundCreated", (round: RoundType) => {
+      console.log("Pick five instant Round Created:", round);
+      dispatch(setPickFiveInstantActiveRound(round));
     });
 
     return () => {
@@ -129,11 +184,9 @@ function HomePage() {
           </div>
 
           {/* game variants */}
-          {game.value === "normal-draw" && (
-            <div className="flex justify-center items-center mt-2">
+          <div className="flex justify-center items-center mt-2">
               <SelectGameVariant />
             </div>
-          )}
 
           {/* timer */}
 
@@ -201,3 +254,5 @@ function HomePage() {
 }
 
 export default HomePage;
+
+
