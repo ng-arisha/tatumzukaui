@@ -1,12 +1,13 @@
 "use client";
 
+import { getUserPayments } from "@/lib/payment/payment";
+import { AppDispatch, RootState } from "@/lib/store";
 import { formatCurrency, formatDate } from "@/utils/utils";
 import { ArrowBigLeft, Loader } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
-import { getUserPayments } from "./payment";
+
 
 function PaymentList() {
   const loading = useSelector((state: RootState) => state.payment.loading);

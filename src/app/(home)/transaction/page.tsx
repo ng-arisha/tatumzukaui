@@ -1,4 +1,5 @@
-import PaymentList from "@/lib/payment/payment-list"
+import PaymentList from "@/components/payments/payment-list"
+
 
 function TransactionsPage() {
     return (
