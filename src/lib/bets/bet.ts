@@ -6,11 +6,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 interface InitialBetTye {
     loading: 'idle' | 'pending' | 'succeeded' | 'failed';
     userBets: BetType[];
+    totalPages: number;
 }
 
 const initialState: InitialBetTye = {
     loading: 'idle',
-    userBets: []
+    userBets: [],
+    totalPages: 0
     
 }
 
@@ -40,8 +42,8 @@ export const placeBet = createAsyncThunk("bet/placeBet",
 )
 
 export const getUserBets = createAsyncThunk("bet/getUserBets",
-    async(_,{rejectWithValue})=>{
-        const response = await fetch(`${BASE_URL}/bet/history`,{
+    async(data:{page?:number,limit?:number},{rejectWithValue})=>{
+        const response = await fetch(`${BASE_URL}/bet/history?page=${data.page}&limit=${data.limit}`,{
             method:"GET",
             headers:{
                 "content-Type":"application/json",
@@ -82,7 +84,9 @@ const betSlice = createSlice({
         })
         builder.addCase(getUserBets.fulfilled,(state,action)=>{
             state.loading = 'succeeded';
-            state.userBets = action.payload;
+            console.log(action.payload.data);
+            state.userBets = action.payload.data;
+            state.totalPages = action.payload.totalPages;
         }
         )
         builder.addCase(getUserBets.rejected,(state,{payload})=>{

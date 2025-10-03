@@ -5,17 +5,30 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { formatCurrency, formatDate } from "@/utils/utils";
 import { ArrowBigLeft, Loader } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Pagination from "../shared/pagination";
 
 function BetList() {
     const bets = useSelector((state: RootState) => state.bets.userBets);
+    const totalPages = useSelector((state: RootState) => state.bets.totalPages);
     const loading = useSelector((state: RootState) => state.bets.loading);
     const dispatch = useDispatch<AppDispatch>();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [betsPerPage, setBetsPerPage] = useState(10);
+
+
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+
+    const handleGetUserBets = (page: number, limit: number) => {
+      dispatch(getUserBets({ page, limit }));
+    }
 
     useEffect(()=>{
-        dispatch(getUserBets());
-    },[dispatch]);
+      handleGetUserBets(currentPage,betsPerPage);
+    },[currentPage,betsPerPage,dispatch]);
   return (
     <>
     {
@@ -61,6 +74,11 @@ function BetList() {
           }
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
         )
     }
