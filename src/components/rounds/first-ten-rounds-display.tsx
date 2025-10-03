@@ -1,6 +1,6 @@
 "use client";
 
-import { getFirstTenRounds } from "@/lib/rounds/round";
+import { getFirstTenPickFiveRounds, getFirstTenPickFourRounds, getFirstTenPickThreeRounds, getFirstTenRounds } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { Loader2Icon } from "lucide-react";
 import { useEffect } from "react";
@@ -8,12 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 import RoundTip from "./round-tip";
 
 function FirstTenRoundsDisplay() {
-    const rounds = useSelector((state: RootState) => state.rounds.rounds);
+    const gameVariant = useSelector((state: RootState) => state.variants.variant);
+    const pickThreeRounds = useSelector((state: RootState) => state.rounds.pickThreeRounds);
+    const pickFourRounds = useSelector((state: RootState) => state.rounds.pickFourRounds);
+    const pickFiveRounds = useSelector((state: RootState) => state.rounds.pickFiveRounds);
+    const pickTwoRounds = useSelector((state: RootState) => state.rounds.rounds);
+    const rounds = gameVariant.count === 2 ? pickTwoRounds : gameVariant.count === 3 ? pickThreeRounds : gameVariant.count === 4 ? pickFourRounds : pickFiveRounds;
     const loading = useSelector((state: RootState) => state.rounds.loadingRounds);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         dispatch(getFirstTenRounds())
+        dispatch(getFirstTenPickThreeRounds())
+        dispatch(getFirstTenPickFourRounds())
+        dispatch(getFirstTenPickFiveRounds())
     }, [dispatch]);
     return (
         <>

@@ -18,6 +18,9 @@ import {
   getPickFourActiveRound,
   getPickThreeActiveRound,
   setActiveRound,
+  setFirstTenPickFiveRounds,
+  setFirstTenPickFourRounds,
+  setFirstTenPickThreeRounds,
   setFirstTenRounds,
   setPickFiveActiveRound,
   setPickFiveInstantActiveRound,
@@ -121,9 +124,7 @@ function HomePage() {
       dispatch(getUserBalance());
     });
 
-    socket.on("firstTenRounds", (rounds: RoundType[]) => {
-      dispatch(setFirstTenRounds(rounds));
-    });
+    
 
     socket.on("pickThreeRoundCreated", (round: RoundType) => {
       console.log("Pick Three Round Created:", round);
@@ -160,6 +161,24 @@ function HomePage() {
     socket.on("pickFiveInstantRoundCreated", (round: RoundType) => {
       console.log("Pick five instant Round Created:", round);
       dispatch(setPickFiveInstantActiveRound(round));
+    });
+
+    // round history
+
+    socket.on("firstTenRounds", (rounds: RoundType[]) => {
+      dispatch(setFirstTenRounds(rounds));
+    });
+
+    socket.on("firstTenRoundsPickThree", (rounds: RoundType[]) => {
+      dispatch(setFirstTenPickThreeRounds(rounds));
+    });
+
+    socket.on("firstTenRoundsPickFour", (rounds: RoundType[]) => {
+      dispatch(setFirstTenPickFourRounds(rounds));
+    });
+
+    socket.on("firstTenRoundsPickFive", (rounds: RoundType[]) => {
+      dispatch(setFirstTenPickFiveRounds(rounds));
     });
 
     return () => {
