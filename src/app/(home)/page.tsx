@@ -109,7 +109,7 @@ function HomePage() {
     setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
     }
     
-  }, [activeRound,game]);
+  }, [activeRound]);
 
   useEffect(() => {
     if (!socket) return;
