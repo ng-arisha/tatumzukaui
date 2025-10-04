@@ -93,12 +93,11 @@ function HomePage() {
     dispatch(getInstantPickFiveActiveRound());
   }, [dispatch]);
 
-  useEffect(()=>{},[game])
+  
 
   useEffect(() => {
-    if (!activeRound) {
-      setRoundEndTime(null);
-      setNextRoundTime(null);
+    if (!activeRound?.createdAt) {
+      console.log("Active round or createdAt is undefined");
       return;
     }
     if(game.value==="insta-play"){
@@ -110,6 +109,11 @@ function HomePage() {
       const endTime = addTime(activeRound.createdAt, 4, 30);
     setRoundEndTime(endTime);
     setNextRoundTime(new Date(endTime.getTime() + 30 * 1000));
+    console.log("Round:", activeRound.id);
+  console.log("Created:", new Date(activeRound.createdAt));
+  console.log("End:", endTime);
+  console.log("Now:", new Date());
+  console.log("Diff:", endTime.getTime() - new Date().getTime());
     }
     
   }, [activeRound]);
@@ -163,6 +167,11 @@ function HomePage() {
       dispatch(setPickFiveInstantActiveRound(round));
     });
 
+    socket.on("roundCompleted", (round: RoundType) => {
+      console.log("Pick five instant Round Created:", round);
+      dispatch(getUserBalance());
+    });
+
     // round history
 
     socket.on("firstTenRounds", (rounds: RoundType[]) => {
@@ -209,7 +218,9 @@ function HomePage() {
 
           {/* timer */}
 
-          <div className="flex flex-col justify-center mt-4 items-center w-full">
+          {
+            game.value === "normal-draw" && (
+              <div className="flex flex-col justify-center mt-4 items-center w-full">
             {roundCountdown.isTimeUp ? (
               nextRoundCountdown.isTimeUp ? (
                 <div className="text-center">
@@ -221,8 +232,8 @@ function HomePage() {
               ) : (
                 <div className="mb-4">
                   <p className="py-3 text-gray-500">Next round starts in :</p>
-                  <Card className="border-2 border-orange-400 px-6 py-3">
-                    <div className="flex space-x-2 items-center">
+                  <Card className="border-2 border-orange-400 px-6 py-3 flex flex-col justify-center items-center">
+                    <div className="flex space-x-2 items-center justify-center">
                       <Clock className="text-orange-400" size={28} />
                       <div className="text-xl font-bold text-orange-400">
                         {nextRoundCountdown.minutes}:
@@ -249,9 +260,14 @@ function HomePage() {
               </div>
             )}
           </div>
+            )
+          }
 
           {/*Display top 10 rounds  */}
-          <FirstTenRoundsDisplay />
+          {
+            game.value === "normal-draw" && ( <FirstTenRoundsDisplay />)
+          }
+         
 
           {/* bet card */}
 

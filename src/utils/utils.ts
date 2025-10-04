@@ -94,7 +94,7 @@ export const countries = defaultCountries.filter((country) => {
 
   export const gameTypes = [
     {
-      label:"Normal Draw",
+      label:"Timed Draw",
       value:"normal-draw"
     },
     {

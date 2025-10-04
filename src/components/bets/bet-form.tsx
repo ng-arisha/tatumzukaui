@@ -19,7 +19,7 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
      const onSelectNumber = (num: number) => {
         setSelectedNumbers((prev) => [...prev, num]);
       };
-      const [amount, setAmount] = useState(0);
+      const [amount, setAmount] = useState(50);
 
       const dispatch = useDispatch<AppDispatch>();
       const loading = useSelector((state: RootState) => state.bets.loading);
@@ -42,17 +42,18 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
         }
         await dispatch(placeBet(data));
         setSelectedNumbers([]);
-        setAmount(0);
+        setAmount(50);
         dispatch(getUserBalance())
       }
     return (
         <Card className="py-6 px-4">
             <h1 className="text-orange-400 text-lg ">Place Bet</h1>
             <p className="text-gray-50 text-lg py-4">
-              Select your lucky numbers(0-9)
+              Select your numbers(0-9)
             </p>
 
             {/* display a grid of numbers between 0-9 */}
+           
             <div className="grid grid-cols-5 gap-4 mt-8">
               {numbers.map((num) => (
                 <div

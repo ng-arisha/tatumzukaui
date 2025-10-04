@@ -35,6 +35,8 @@ function FirstTenRoundsDisplay() {
                     <span className="text-gray-500">Previous rounds are not available available</span>
                 </div>
             ):(
+                <>
+                <h1 className="text-sm font-normal text-center text-gray-400">Last 10 Draws</h1>
                 <div className="w-full flex justify-center items-center overflow-x-auto py-2 space-x-2">
             
             {
@@ -43,6 +45,7 @@ function FirstTenRoundsDisplay() {
                 ))
             }
         </div>
+                </>
             )
         }
         </>
