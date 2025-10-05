@@ -105,6 +105,7 @@ function HomePage() {
     socket.connect();
 
     socket.on("pick-twoRoundCreated", (round: RoundType) => {
+      console.log("Pick two Round Created:", round);
       dispatch(setActiveRound(round));
       dispatch(getUserBalance());
     });
