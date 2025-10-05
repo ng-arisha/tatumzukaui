@@ -104,24 +104,24 @@ function HomePage() {
 
     socket.connect();
 
-    socket.on("roundCreated", (round: RoundType) => {
+    socket.on("pick-twoRoundCreated", (round: RoundType) => {
       dispatch(setActiveRound(round));
       dispatch(getUserBalance());
     });
 
     
 
-    socket.on("pickThreeRoundCreated", (round: RoundType) => {
+    socket.on("pick-threeRoundCreated", (round: RoundType) => {
       console.log("Pick Three Round Created:", round);
       dispatch(setPickThreeActiveRound(round));
       
     });
 
-    socket.on("pickFourRoundCreated", (round: RoundType) => {
+    socket.on("pick-fourRoundCreated", (round: RoundType) => {
       console.log("Pick four Round Created:", round);
       dispatch(setPickFourActiveRound(round));
     });
-    socket.on("pickFiveRoundCreated", (round: RoundType) => {
+    socket.on("pick-fiveRoundCreated", (round: RoundType) => {
       console.log("Pick five Round Created:", round);
       dispatch(setPickFiveActiveRound(round));
       
