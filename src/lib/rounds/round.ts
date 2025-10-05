@@ -8,10 +8,7 @@ interface InitialRoundState {
   activePickThree: RoundType | null;
   activePickFour: RoundType | null;
   activePickFive: RoundType | null;
-  activeInstantPickTwo: RoundType | null;
-  activeInstantPickThree: RoundType | null;
-  activeInstantPickFour: RoundType | null;
-  activeInstantPickFive: RoundType | null;
+  
   rounds: RoundType[];
   pickThreeRounds: RoundType[];
   pickFourRounds: RoundType[];
@@ -27,10 +24,7 @@ const initialState: InitialRoundState = {
   activePickThree: null,
   activePickFour: null,
   activePickFive: null,
-  activeInstantPickTwo: null,
-  activeInstantPickThree: null,
-  activeInstantPickFour: null,
-  activeInstantPickFive: null,
+ 
   pickThreeRounds: [],
   pickFourRounds: [],
   pickFiveRounds: [],
@@ -128,110 +122,13 @@ export const getActivePickFiveRound = createAsyncThunk(
   }
 );
 
-export const getInstantPickTwoActiveRound = createAsyncThunk(
-  "rounds/instantPickTwoActive",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${BASE_URL}/round/two-pick-instant`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(
-          errorData.message || "Fetching instant pick two active round failed"
-        );
-      }
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      rejectWithValue(error);
-    }
-  }
-);
 
-export const getInstantPickThreeActiveRound = createAsyncThunk(
-  "rounds/instantPickThreeActive",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/round/active-pick-three-instant`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(
-          errorData.message || "Fetching instant pick three active round failed"
-        );
-      }
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      rejectWithValue(error);
-    }
-  }
-);
 
-export const getInstantPickFourActiveRound = createAsyncThunk(
-  "rounds/instantPickFourActive",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/round/active-pick-four-instant`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(
-          errorData.message || "Fetching instant pick Four active round failed"
-        );
-      }
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      rejectWithValue(error);
-    }
-  }
-);
 
-export const getInstantPickFiveActiveRound = createAsyncThunk(
-  "rounds/instantPickFiveActive",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/round/active-pick-five-instant`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(
-          errorData.message || "Fetching instant pick Five active round failed"
-        );
-      }
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      rejectWithValue(error);
-    }
-  }
-);
+
+
+
+
 
 export const getFirstTenRounds = createAsyncThunk(
   "rounds/getFirstTen",
@@ -339,27 +236,7 @@ const roundSlice = createSlice({
     setPickFiveActiveRound: (state, action: PayloadAction<RoundType>) => {
       state.activePickFive = action.payload;
     },
-    setPickTwoInstantActiveRound: (state, action: PayloadAction<RoundType>) => {
-      state.activeInstantPickTwo = action.payload;
-    },
-    setPickThreeInstantActiveRound: (
-      state,
-      action: PayloadAction<RoundType>
-    ) => {
-      state.activeInstantPickThree = action.payload;
-    },
-    setPickFourInstantActiveRound: (
-      state,
-      action: PayloadAction<RoundType>
-    ) => {
-      state.activeInstantPickFour = action.payload;
-    },
-    setPickFiveInstantActiveRound: (
-      state,
-      action: PayloadAction<RoundType>
-    ) => {
-      state.activeInstantPickFive = action.payload;
-    },
+    
 
     // set other first ten rounds
     setFirstTenPickThreeRounds: (state, action: PayloadAction<RoundType[]>) => {
@@ -441,70 +318,9 @@ const roundSlice = createSlice({
       state.activePickFive = null;
     });
 
-    // handle instant pick two active round
-    builder.addCase(getInstantPickTwoActiveRound.pending, (state) => {
-      state.loading = "pending";
-    });
-    builder.addCase(getInstantPickTwoActiveRound.fulfilled, (state, action) => {
-      state.loading = "succeeded";
-      state.activeInstantPickTwo = action.payload;
-      console.log("Active round fetched:", action.payload);
-    });
-    builder.addCase(getInstantPickTwoActiveRound.rejected, (state) => {
-      state.loading = "failed";
-      state.activeInstantPickTwo = null;
-    });
+   
 
-    // handle instant pick three active round
-    builder.addCase(getInstantPickThreeActiveRound.pending, (state) => {
-      state.loading = "pending";
-    });
-    builder.addCase(
-      getInstantPickThreeActiveRound.fulfilled,
-      (state, action) => {
-        state.loading = "succeeded";
-        state.activeInstantPickThree = action.payload;
-        console.log("Active round fetched:", action.payload);
-      }
-    );
-    builder.addCase(getInstantPickThreeActiveRound.rejected, (state) => {
-      state.loading = "failed";
-      state.activeInstantPickThree = null;
-    });
-
-    // handle instant pick four active round
-    builder.addCase(getInstantPickFourActiveRound.pending, (state) => {
-      state.loading = "pending";
-    });
-    builder.addCase(
-      getInstantPickFourActiveRound.fulfilled,
-      (state, action) => {
-        state.loading = "succeeded";
-        state.activeInstantPickFour = action.payload;
-        console.log("Active round fetched:", action.payload);
-      }
-    );
-    builder.addCase(getInstantPickFourActiveRound.rejected, (state) => {
-      state.loading = "failed";
-      state.activeInstantPickFour = null;
-    });
-
-    // handle instant pick five active round
-    builder.addCase(getInstantPickFiveActiveRound.pending, (state) => {
-      state.loading = "pending";
-    });
-    builder.addCase(
-      getInstantPickFiveActiveRound.fulfilled,
-      (state, action) => {
-        state.loading = "succeeded";
-        state.activeInstantPickFive = action.payload;
-        console.log("Active round fetched:", action.payload);
-      }
-    );
-    builder.addCase(getInstantPickFiveActiveRound.rejected, (state) => {
-      state.loading = "failed";
-      state.activeInstantPickFive = null;
-    });
+   
 
     // handle first ten pick three rounds
     builder.addCase(getFirstTenPickThreeRounds.pending, (state) => {
@@ -552,10 +368,7 @@ export const {
   setPickThreeActiveRound,
   setPickFourActiveRound,
   setPickFiveActiveRound,
-  setPickTwoInstantActiveRound,
-  setPickThreeInstantActiveRound,
-  setPickFourInstantActiveRound,
-  setPickFiveInstantActiveRound,
+ 
   setFirstTenPickThreeRounds,
   setFirstTenPickFourRounds,
   setFirstTenPickFiveRounds,

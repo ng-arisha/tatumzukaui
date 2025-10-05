@@ -11,10 +11,7 @@ import { useSocket } from "@/hooks/useSocket";
 import {
   getActivePickFiveRound,
   getActiveRound,
-  getInstantPickFiveActiveRound,
-  getInstantPickFourActiveRound,
-  getInstantPickThreeActiveRound,
-  getInstantPickTwoActiveRound,
+
   getPickFourActiveRound,
   getPickThreeActiveRound,
   setActiveRound,
@@ -23,12 +20,8 @@ import {
   setFirstTenPickThreeRounds,
   setFirstTenRounds,
   setPickFiveActiveRound,
-  setPickFiveInstantActiveRound,
   setPickFourActiveRound,
-  setPickFourInstantActiveRound,
-  setPickThreeActiveRound,
-  setPickThreeInstantActiveRound,
-  setPickTwoInstantActiveRound,
+  setPickThreeActiveRound
 } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { getUserBalance } from "@/lib/user/user";
@@ -43,10 +36,7 @@ function HomePage() {
   );
   const gameVariant = useSelector((state: RootState) => state.variants.variant);
 
-  const activeInstantPickTwoRound = useSelector((state:RootState)=>state.rounds.activeInstantPickTwo)
-  const activeInstantPickThreeRound = useSelector((state:RootState)=>state.rounds.activeInstantPickThree)
-  const activeInstantPickFourRound = useSelector((state:RootState)=>state.rounds.activeInstantPickFour)
-  const activeInstantPickFiveRound = useSelector((state:RootState)=>state.rounds.activeInstantPickFive)
+  
   
   const game = useSelector((state: RootState) => state.variants.game);
   const loading = useSelector((state: RootState) => state.rounds.loading);
@@ -59,13 +49,7 @@ function HomePage() {
   const activePickFiveRound = useSelector(
     (state: RootState) => state.rounds.activePickFive
   );
-  const instantDrawRounds = gameVariant.count === 2
-  ? activeInstantPickTwoRound
-  : gameVariant.count === 3
-  ? activeInstantPickThreeRound
-  : gameVariant.count === 4
-  ? activeInstantPickFourRound
-  : activeInstantPickFiveRound;
+  
   const normalDrawRounds = gameVariant.count === 2
   ? activePickTwoRound
   : gameVariant.count === 3
@@ -73,7 +57,7 @@ function HomePage() {
   : gameVariant.count === 4
   ? activePickFourRound
   : activePickFiveRound;
-  const activeRound = game.value === "normal-draw" ? normalDrawRounds : instantDrawRounds;
+  const activeRound = game.value === "normal-draw" ? normalDrawRounds : normalDrawRounds;
   const dispatch = useDispatch<AppDispatch>();
   const { socket, isConnected } = useSocket();
 
@@ -87,10 +71,7 @@ function HomePage() {
     dispatch(getPickThreeActiveRound());
     dispatch(getPickFourActiveRound());
     dispatch(getActivePickFiveRound());
-    dispatch(getInstantPickTwoActiveRound());
-    dispatch(getInstantPickThreeActiveRound());
-    dispatch(getInstantPickFourActiveRound());
-    dispatch(getInstantPickFiveActiveRound());
+   
   }, [dispatch]);
 
   
@@ -101,9 +82,9 @@ function HomePage() {
       return;
     }
     if(game.value==="insta-play"){
-      const endTime = addTime(activeRound.createdAt, 0, 5);
-      setRoundEndTime(endTime);
-      setNextRoundTime(new Date(endTime.getTime() + 5 * 1000));
+     
+      setRoundEndTime(null);
+      setNextRoundTime(null);
 
     }else{
       const endTime = addTime(activeRound.createdAt, 4, 30);
@@ -146,26 +127,7 @@ function HomePage() {
       
     });
 
-    socket.on("instantRoundCreated", (round: RoundType) => {
-      console.log("Pick two instant Round Created:", round);
-      dispatch(setPickTwoInstantActiveRound(round));
-      dispatch(getUserBalance());
-    });
-
-    socket.on("pickThreeInstantRoundCreated", (round: RoundType) => {
-      console.log("Pick three instant Round Created:", round);
-      dispatch(setPickThreeInstantActiveRound(round));
-    });
-
-    socket.on("pickFourInstantRoundCreated", (round: RoundType) => {
-      console.log("Pick four instant Round Created:", round);
-      dispatch(setPickFourInstantActiveRound(round));
-    });
-
-    socket.on("pickFiveInstantRoundCreated", (round: RoundType) => {
-      console.log("Pick five instant Round Created:", round);
-      dispatch(setPickFiveInstantActiveRound(round));
-    });
+   
 
     socket.on("roundCompleted", (round: RoundType) => {
       console.log("Pick five instant Round Created:", round);

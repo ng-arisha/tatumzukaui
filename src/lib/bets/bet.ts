@@ -17,7 +17,7 @@ const initialState: InitialBetTye = {
 }
 
 export const placeBet = createAsyncThunk("bet/placeBet",
-    async(data:{roundId:string,guess:number[],amount:number},{rejectWithValue})=>{
+    async(data:{roundId:string,guess:number[],amount:number,type:string},{rejectWithValue})=>{
         try {
             const response = await fetch(`${BASE_URL}/bet/place`,{
                 method:"POST",

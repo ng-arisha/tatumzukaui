@@ -23,6 +23,7 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
 
       const dispatch = useDispatch<AppDispatch>();
       const loading = useSelector((state: RootState) => state.bets.loading);
+      const game = useSelector((state: RootState) => state.variants.game);
       
 
       const handlePlaceBet = async() => {
@@ -38,7 +39,8 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
         const data = {
             roundId: activeRound!.id!,
             guess: selectedNumbers,
-            amount: amount // replace with actual amount from input
+            amount: amount ,
+            type: game.value
         }
         await dispatch(placeBet(data));
         setSelectedNumbers([]);

@@ -95,11 +95,11 @@ export const countries = defaultCountries.filter((country) => {
   export const gameTypes = [
     {
       label:"Timed Draw",
-      value:"normal-draw"
+      value:"normal"
     },
     {
       label:"Insta Play",
-      value:"insta-play"
+      value:"instant"
     }
     
   ]
