@@ -1,14 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookie from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 interface InitalStateType {
   IsLoading: "idle" | "pending" | "succeeded" | "failed";
   token: string | null;
+  user: CustomeJwtPayload | null;
 }
 const initialState: InitalStateType = {
   IsLoading: "idle",
   token: null,
+  user: null,
 };
 
 export const register = createAsyncThunk(
@@ -62,6 +65,20 @@ const authSlice = createSlice({
       Cookie.remove("token");
       toast.success("Logged out successfully");
     },
+
+    setUserFromToken: (state) => {
+      const token = state.token;
+      if(token){
+        try {
+          const decodedToken = jwtDecode<CustomeJwtPayload>(token);
+          state.user = decodedToken;
+          
+        } catch (error) {
+          state.user = null;
+        }
+      }
+
+    }
   },
   extraReducers: (builder) => {
     // handleregister
@@ -100,4 +117,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { logout } = authSlice.actions;
+export const { logout,setUserFromToken } = authSlice.actions;

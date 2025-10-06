@@ -67,7 +67,7 @@ function BetList() {
             <th>{bet.id.slice(0,4)}</th>
             <td>{bet.guess.join(",")}</td>
             <td>{formatCurrency(bet.amount)}</td>
-            <td>{bet.status}</td>
+            <td>{bet.status === 'lost' ? "Lost" : "Won"}</td>
             <td>{formatDate(bet.createdAt)}</td>
           </tr>
             ))

@@ -166,7 +166,7 @@ function HomePage() {
               Numbers Game
             </h1>
             <p className="text-gray-500">
-              Choose your Lucky numbers and Place your Bet
+              Choose your numbers and Place your Bet
             </p>
           </div>
           {/* display game types(insta play and normal draw) */}
@@ -182,7 +182,7 @@ function HomePage() {
           {/* timer */}
 
           {
-            game.value === "normal-draw" && (
+            game.value === "normal" && (
               <div className="flex flex-col justify-center mt-4 items-center w-full">
             {roundCountdown.isTimeUp ? (
               nextRoundCountdown.isTimeUp ? (

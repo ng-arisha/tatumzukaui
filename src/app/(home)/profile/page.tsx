@@ -1,22 +1,30 @@
 "use client";
 
 import PaymentComponent from "@/components/payments/payment";
-import { logout } from "@/lib/auth/auth";
-import { AppDispatch } from "@/lib/store";
-import { transactionsTab } from "@/utils/utils";
-import { LogOut, User } from "lucide-react";
+import { logout, setUserFromToken } from "@/lib/auth/auth";
+import { AppDispatch, RootState } from "@/lib/store";
+import { getUserBalance } from "@/lib/user/user";
+import { formatCurrency, transactionsTab } from "@/utils/utils";
+import { Loader2Icon, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const user = useSelector((state:RootState) => state.auth.user);
+  const wallet = useSelector((state:RootState) => state.user.wallet);
+  const loading = useSelector((state: RootState) => state.user.loading);
   const handleChangeTab = (index: number) => {
     setActiveTab(index);
   };
+  useEffect(() => {
+    dispatch(setUserFromToken())
+    dispatch(getUserBalance());
+  }, [dispatch]);
   
 
   const handleLogout = () => {
@@ -31,8 +39,14 @@ function ProfilePage() {
             <User size={48} className="text-gray-400 m-2" />
           </div>
           <div className="flex flex-col space-y-2 text-gray-500">
-            <span>+2557123456</span>
-            <span>Tsh. 4000</span>
+            {user && <span className="font-medium">{user.phone}</span>}
+            <span className="text-sm text-gray-500">
+              {loading === "pending" ? (
+                <Loader2Icon className="animate-spin" size={16} />
+              ) : (
+                formatCurrency(wallet?.balance || 0)
+              )}
+            </span>
           </div>
         </div>
 
