@@ -64,8 +64,8 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
         <Card className="py-6 px-4">
             <h1 className="text-orange-400 text-lg ">Place Bet</h1>
            <div className="flex justify-between  py-4 items-center">
-           <p className="text-gray-50 text-lg">
-              Select your numbers(0-9)
+           <p className="text-gray-50 text-sm font-medium">
+              Select your numbers
             </p>
 
             <Button
