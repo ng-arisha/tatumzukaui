@@ -24,6 +24,19 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
       const dispatch = useDispatch<AppDispatch>();
       const loading = useSelector((state: RootState) => state.bets.loading);
       const game = useSelector((state: RootState) => state.variants.game);
+
+      const maxPick = selectedVariant.count;
+
+      const autoPickNumbers = () => {
+        const numToPick = maxPick
+        const picked = []
+        for(let i=0; i< numToPick; i++){
+          const randomIndex = Math.floor(Math.random() * numbers.length);
+          picked.push(numbers[randomIndex]);
+        }
+        setSelectedNumbers(picked);
+
+      }
       
 
       const handlePlaceBet = async() => {
@@ -50,16 +63,28 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
     return (
         <Card className="py-6 px-4">
             <h1 className="text-orange-400 text-lg ">Place Bet</h1>
-            <p className="text-gray-50 text-lg py-4">
+           <div className="flex justify-between  py-4 items-center">
+           <p className="text-gray-50 text-lg">
               Select your numbers(0-9)
             </p>
+
+            <Button
+            variant="secondary"
+            className="cursor-pointer"
+            onClick={autoPickNumbers}
+            disabled={loading === 'pending'}
+            
+            >
+              Auto Pick
+            </Button>
+           </div>
 
             {/* display a grid of numbers between 0-9 */}
            
             <div className="grid grid-cols-5 gap-4 mt-8">
-              {numbers.map((num) => (
+              {numbers.map((num,index) => (
                 <div
-                  key={num}
+                  key={index}
                   onClick={() => onSelectNumber(num)}
                   className={` rounded-lg flex items-center justify-center h-12 w-12 cursor-pointer  transition-all ${
                     selectedNumbers.includes(num)
@@ -81,9 +106,9 @@ function BetForm({activeRound}:{activeRound: RoundType}) {
                 )
              }
               <div className="flex space-x-2">
-                {selectedNumbers.map((num) => (
+                {selectedNumbers.map((num,index) => (
                   <div
-                    key={num}
+                    key={index}
                     onClick={() =>
                       setSelectedNumbers((prev) =>
                         prev.filter((n) => n !== num)
