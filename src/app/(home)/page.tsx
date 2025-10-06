@@ -228,7 +228,7 @@ function HomePage() {
 
           {/*Display top 10 rounds  */}
           {
-            game.value === "normal-draw" && ( <FirstTenRoundsDisplay />)
+            game.value === "normal" && ( <FirstTenRoundsDisplay />)
           }
          
 

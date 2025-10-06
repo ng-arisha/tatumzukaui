@@ -37,7 +37,7 @@ function FirstTenRoundsDisplay() {
             ):(
                 <>
                 <h1 className="text-sm font-normal text-center text-gray-400">Last 10 Draws</h1>
-                <div className="w-full flex justify-center items-center overflow-x-auto py-2 space-x-2">
+                <div className="w-full flex justify-start items-center overflow-x-auto py-2 space-x-2">
             
             {
                 rounds.map((round)=>(
