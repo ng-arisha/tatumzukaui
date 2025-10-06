@@ -212,7 +212,7 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
 
           {loading === "pending" ? (
             <div className="text-center mt-4">
-              <Loader2Icon className="animate-spin h-6 w-6 text-orange-400 mx-auto" />
+              <Loader2Icon className=" h-6 w-6 text-gray-400 mx-auto" />
             </div>
           ) : (
             <Button
