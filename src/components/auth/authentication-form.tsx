@@ -1,9 +1,9 @@
 "use client";
 
-import { login, register } from "@/lib/auth/auth";
+import { login, register, resetLoading } from "@/lib/auth/auth";
 import { AppDispatch, RootState } from "@/lib/store";
 import { countries } from "@/utils/utils";
-import { Loader2Icon, Lock } from "lucide-react";
+import { Loader2Icon, Lock, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,6 +25,10 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
   const dispatch = useDispatch<AppDispatch>();
   const loading = useSelector((state: RootState) => state.auth.IsLoading);
   const router = useRouter();
+
+  const handleResetLoading = () => {
+    dispatch(resetLoading())
+  }
 
   const handleSubmit = async () => {
     // Handle form submission
@@ -186,7 +190,15 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
               )}
             </>
           )}
-          {page === "login" && (
+         <div className="flex justify-between items-center">
+          {
+            loading ==='pending' && (
+              <span onClick={handleResetLoading}>
+                <RefreshCcw className="animate-spin text-orange-400" />
+              </span>
+            )
+          }
+         {page === "login" && (
             <div className="text-right text-sm">
               <Link
                 href="/forgot-password"
@@ -196,6 +208,7 @@ function AuthenticationForm({ page }: { page: "login" | "register" }) {
               </Link>
             </div>
           )}
+         </div>
 
           {loading === "pending" ? (
             <div className="text-center mt-4">

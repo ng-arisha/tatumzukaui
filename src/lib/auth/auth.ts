@@ -66,6 +66,10 @@ const authSlice = createSlice({
       toast.success("Logged out successfully");
     },
 
+    resetLoading: (state) => {
+      state.IsLoading = "idle";
+    },
+
     setUserFromToken: (state) => {
       const token = state.token;
       if(token){
@@ -117,4 +121,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { logout,setUserFromToken } = authSlice.actions;
+export const { logout,setUserFromToken,resetLoading } = authSlice.actions;
