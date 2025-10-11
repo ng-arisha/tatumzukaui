@@ -58,10 +58,10 @@
 "use client";
 
 import {
-    getFirstTenPickFiveRounds,
-    getFirstTenPickFourRounds,
-    getFirstTenPickThreeRounds,
-    getFirstTenRounds,
+  getFirstTenPickFiveRounds,
+  getFirstTenPickFourRounds,
+  getFirstTenPickThreeRounds,
+  getFirstTenRounds,
 } from "@/lib/rounds/round";
 import { AppDispatch, RootState } from "@/lib/store";
 import { Loader2Icon } from "lucide-react";
@@ -121,7 +121,7 @@ export default function FirstTenRoundsDisplay() {
 
     const containerWidth = container.clientWidth;
     const comp = getComputedStyle(container);
-    // try several properties for gap (Tailwind uses gap)
+   
     const gap = parseFloat(comp.gap || comp.columnGap || comp.rowGap || "0") || 0;
     const btnWidth = measureBtnRef.current?.getBoundingClientRect().width || 0;
 
